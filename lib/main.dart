@@ -27,7 +27,14 @@ class Home extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Color.fromRGBO(110, 255, 105, 90),
       ),
-      body: EventList(),
+      // body: EventList(),
+      body: Container(
+        child: FutureBuilder<List<Event>>(
+          builder: (context, snapshot) {
+
+          },
+        ),
+      ),
     );
   }
 }
@@ -67,8 +74,28 @@ class EventListStateless extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return null;
+    return ListView.builder(
+      itemCount: events.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Column(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              child: Card(
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(events[index].name),
+                      subtitle: Text(events[index].description),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
