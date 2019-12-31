@@ -11,21 +11,45 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Inicio'),
+      home: Home(),
     );
   }
 }
 
-class Inicio extends StatelessWidget {
+// Widgets
+
+class Home extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Inicio'),
+        centerTitle: true,
+        backgroundColor: Color.fromRGBO(110, 255, 105, 90),
+      ),
+      body: EventList(),
+    );
+  }
+}
+
+class EventList extends StatefulWidget {
+  EventList({Key key}) : super(key:key);
+
+  @override
+  EventListState createState() => EventListState();
+}
+
+class EventListState extends State<EventList> {
   final List<String> prueba = <String>['Primero','Segundo'];
 
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
+      padding: const EdgeInsets.all(8),
       itemBuilder: (BuildContext context, int index) {
         return Container(
           height: 50,
-          child: Center(child: Text('$prueba'),),
+          child: Center(child: Text('${prueba[index]}'),),
         );
       },
       itemCount: prueba.length, 
@@ -34,49 +58,12 @@ class Inicio extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+// Clases
 
-  final String title;
+class Evento {
+  final String nombre;
 
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
+  Evento({
+    this.nombre,
+  });
 }
