@@ -58,12 +58,39 @@ class EventListState extends State<EventList> {
   }
 }
 
+// Opcion: Stateless
+
+class EventListStateless extends StatelessWidget {
+  final List<Event> events;
+
+  EventListStateless({Key key, this.events}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return null;
+  }
+}
+
 // Clases
 
-class Evento {
-  final String nombre;
+class Event {
+  final String name;
+  final String description;
+  DateTime when;
+  final String location;
+  final bool free;
+  final bool adults;
+  final Set tags = new Set();
 
-  Evento({
-    this.nombre,
+  Event({
+    this.name,
+    this.description,
+    this.when,
+    this.free,
+    this.adults,
+    this.location,
   });
+
+  // TODO Crear factory .fromjson
 }
