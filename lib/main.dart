@@ -1,4 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
 
@@ -31,7 +36,7 @@ class Home extends StatelessWidget {
       body: Container(
         child: FutureBuilder<List<Event>>(
           builder: (context, snapshot) {
-
+            // TODO crear lista para probar los eventos mostrados en la app
           },
         ),
       ),
@@ -108,7 +113,7 @@ class Event {
   final String location;
   final bool free;
   final bool adults;
-  final Set tags = new Set();
+  Set tags = new Set();
 
   Event({
     this.name,
@@ -117,7 +122,32 @@ class Event {
     this.free,
     this.adults,
     this.location,
+    this.tags,
   });
 
-  // TODO Crear factory .fromjson
+  factory Event.fromJson(Map<String, dynamic> json) {
+    return Event(
+      name: json['name'] as String,
+      description: json['description'] as String,
+      when: json['when'] as DateTime,
+      free: json['free'] as bool,
+      adults: json['adults'] as bool,
+      location: json['location'] as String,
+      tags: json['tags'] as Set,
+    );
+  }
+}
+
+// fetch
+Future<List<Event>> fetchEvents(http.Client client) async {
+  final response =
+    await client.get('');
+
+  return compute(parseEvents, response.body);
+}
+
+List<Event> parseEvents(String responseBody) {
+  final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+
+  return parsed.map<Event>((json) => Event.fromJson(json)).toList();
 }
