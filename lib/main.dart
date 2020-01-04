@@ -35,10 +35,47 @@ class Home extends StatelessWidget {
       // body: EventList(),
       body: Container(
         child: FutureBuilder<List<Event>>(
+          future: fetchEvents,
           builder: (context, snapshot) {
-            return snapshot.hasData
-              ? EventListStateless(events: snapshot.data)
-              : Center(child: CircularProgressIndicator());
+            List<Event> events;
+            List<Widget> list;
+
+            if (snapshot.hasData) {
+              print(snapshot.data);
+              events = snapshot.data;
+              list = <Widget>[
+                ListView.builder(
+                  itemCount: events.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Column(
+                      children: <Widget>[
+                        Container(
+                          alignment: Alignment.center,
+                          child: Card(
+                            child: Column(
+                              children: <Widget>[
+                                ListTile(
+                                  title: Text(events[index].name),
+                                  subtitle: Text(events[index].description),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                )
+              ];
+            }
+            
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: list,
+              ),
+            );
           },
         ),
       ),
@@ -72,8 +109,44 @@ class EventListState extends State<EventList> {
   }
 } */
 
-// Opcion: Stateless
+class EventList extends StatefulWidget {
+  final List<Event> events;
 
+  EventList({Key key, this.events}) : super(key:key);
+
+  @override
+  EventListState createState() => EventListState();
+}
+
+class EventListState extends State<EventList> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int index) {
+        return Column(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              child: Card(
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(widget.events[index].name),
+                      subtitle: Text(widget.events[index].description),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// Opcion: Stateless
+/* 
 class EventListStateless extends StatelessWidget {
   final List<Event> events;
 
@@ -105,7 +178,7 @@ class EventListStateless extends StatelessWidget {
     );
   }
 }
-
+ */
 // Clases
 
 class Event {
@@ -141,19 +214,25 @@ class Event {
 }
 
 // fetch
-Future<List<Event>> fetchEvents(http.Client client) async {
-  final response =
-    await client.get('https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io/events');
-
-    // https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io
-
-  return compute(parseEvents, response.body);
-}
 
 List<Event> parseEvents(String responseBody) {
   final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
 
   return parsed.map<Event>((json) => Event.fromJson(json)).toList();
 }
+
+Future<List<Event>> returnEvents() async {
+  final response =
+    await http.get('https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io/events');
+
+    // https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io
+
+  return compute(parseEvents, response.body);
+}
+
+Future<List<Event>> fetchEvents = Future<List<Event>>.delayed(
+  Duration(seconds: 2),
+  () => returnEvents(),
+);
 
 // TODO Funciona, pero no devuelve los datos del JSON, puede ser un error en el parseo
