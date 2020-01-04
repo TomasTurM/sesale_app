@@ -184,7 +184,7 @@ class EventListStateless extends StatelessWidget {
 class Event {
   final String name;
   final String description;
-  DateTime when;
+  String when;
   final String location;
   final bool free;
   final bool adults;
@@ -204,7 +204,7 @@ class Event {
     return Event(
       name: json['name'] as String,
       description: json['description'] as String,
-      when: json['when'] as DateTime,
+      when: json['when'] as String,
       free: json['free'] as bool,
       adults: json['adults'] as bool,
       location: json['location'] as String,
@@ -214,25 +214,31 @@ class Event {
 }
 
 // fetch
-
+/*
 List<Event> parseEvents(String responseBody) {
   final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
 
   return parsed.map<Event>((json) => Event.fromJson(json)).toList();
-}
+} Might be useless
+*/
 
 Future<List<Event>> returnEvents() async {
-  final response =
+  final jsonString =
     await http.get('https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io/events');
 
     // https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io
 
-  return compute(parseEvents, response.body);
+  final jsonResponse = json.decode(jsonString.body);
+
+  List<Event> events = jsonResponse.map(
+    (dynamic item) => Event.fromJson(item),
+  ).toList();
+
+  return events;
 }
 
-Future<List<Event>> fetchEvents = Future<List<Event>>.delayed(
-  Duration(seconds: 2),
-  () => returnEvents(),
+Future<List<Event>> fetchEvents = Future<List<Event>>.value(
+  returnEvents(),
 );
 
 // TODO Funciona, pero no devuelve los datos del JSON, puede ser un error en el parseo
