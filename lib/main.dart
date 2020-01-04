@@ -36,7 +36,9 @@ class Home extends StatelessWidget {
       body: Container(
         child: FutureBuilder<List<Event>>(
           builder: (context, snapshot) {
-            // TODO crear lista para probar los eventos mostrados en la app
+            return snapshot.hasData
+              ? EventListStateless(events: snapshot.data)
+              : Center(child: CircularProgressIndicator());
           },
         ),
       ),
@@ -44,7 +46,7 @@ class Home extends StatelessWidget {
   }
 }
 
-class EventList extends StatefulWidget {
+/* class EventList extends StatefulWidget {
   EventList({Key key}) : super(key:key);
 
   @override
@@ -68,7 +70,7 @@ class EventListState extends State<EventList> {
       separatorBuilder: (BuildContext context, int index) => const Divider(),
     );
   }
-}
+} */
 
 // Opcion: Stateless
 
@@ -141,7 +143,9 @@ class Event {
 // fetch
 Future<List<Event>> fetchEvents(http.Client client) async {
   final response =
-    await client.get('');
+    await client.get('https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io/events');
+
+    // https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io
 
   return compute(parseEvents, response.body);
 }
@@ -151,3 +155,5 @@ List<Event> parseEvents(String responseBody) {
 
   return parsed.map<Event>((json) => Event.fromJson(json)).toList();
 }
+
+// TODO Funciona, pero no devuelve los datos del JSON, puede ser un error en el parseo
