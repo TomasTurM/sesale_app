@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,8 +25,18 @@ class MyApp extends StatelessWidget {
 // Widgets
 
 class Home extends StatelessWidget {
+
+  Future getJsonData() async {
+    var response = await Dio().get('https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io/events');
+
+    List<dynamic> list = response.data;
+
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
+    getJsonData();
     return Scaffold(
       appBar: AppBar(
         title: Text('Inicio'),
@@ -34,48 +45,18 @@ class Home extends StatelessWidget {
       ),
       // body: EventList(),
       body: Container(
-        child: FutureBuilder<List<Event>>(
-          future: fetchEvents,
-          builder: (context, snapshot) {
-            List<Event> events;
-            List<Widget> list;
-
-            if (snapshot.hasData) {
-              print(snapshot.data);
-              events = snapshot.data;
-              list = <Widget>[
-                ListView.builder(
-                  itemCount: events.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      children: <Widget>[
-                        Container(
-                          alignment: Alignment.center,
-                          child: Card(
-                            child: Column(
-                              children: <Widget>[
-                                ListTile(
-                                  title: Text(events[index].name),
-                                  subtitle: Text(events[index].description),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                )
-              ];
-            }
-            
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: list,
-              ),
-            );
+        /*child: Center(
+          child: FutureBuilder<dynamic>(
+            future: getJsonData(),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              return Text(snapshot.data[0]['name'].toString());
+            },
+          ),
+        ),*/
+        child: FutureBuilder<dynamic>(
+          future: getJsonData(),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            return EventList(events: snapshot.data);
           },
         ),
       ),
@@ -110,7 +91,7 @@ class EventListState extends State<EventList> {
 } */
 
 class EventList extends StatefulWidget {
-  final List<Event> events;
+  final List<dynamic> events;
 
   EventList({Key key, this.events}) : super(key:key);
 
@@ -122,23 +103,11 @@ class EventListState extends State<EventList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      itemCount: widget.events.length,
       itemBuilder: (BuildContext context, int index) {
-        return Column(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              child: Card(
-                child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(widget.events[index].name),
-                      subtitle: Text(widget.events[index].description),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
+        return ListTile(
+          title: Text(widget.events[index]["name"]),
+          subtitle: Text(widget.events[index]["description"]),
         );
       },
     );
@@ -223,6 +192,7 @@ List<Event> parseEvents(String responseBody) {
 */
 
 Future<List<Event>> returnEvents() async {
+  print("Hola");
   final jsonString =
     await http.get('https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io/events');
 
@@ -233,6 +203,8 @@ Future<List<Event>> returnEvents() async {
   List<Event> events = jsonResponse.map(
     (dynamic item) => Event.fromJson(item),
   ).toList();
+
+
 
   return events;
 }
