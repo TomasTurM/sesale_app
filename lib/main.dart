@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 
 void main() => runApp(MyApp());
@@ -25,15 +23,6 @@ class MyApp extends StatelessWidget {
 // Widgets
 
 class Home extends StatelessWidget {
-
-  Future getJsonData() async {
-    var response = await Dio().get('https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io/events');
-
-    List<dynamic> list = response.data;
-
-    return list;
-  }
-
   @override
   Widget build(BuildContext context) {
     getJsonData();
@@ -43,52 +32,19 @@ class Home extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Color.fromRGBO(110, 255, 105, 90),
       ),
-      // body: EventList(),
       body: Container(
-        /*child: Center(
-          child: FutureBuilder<dynamic>(
-            future: getJsonData(),
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              return Text(snapshot.data[0]['name'].toString());
-            },
-          ),
-        ),*/
         child: FutureBuilder<dynamic>(
           future: getJsonData(),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            return EventList(events: snapshot.data);
+            return snapshot.hasData
+              ? EventList(events: snapshot.data)
+              : Center(child: CircularProgressIndicator());
           },
         ),
       ),
     );
   }
 }
-
-/* class EventList extends StatefulWidget {
-  EventList({Key key}) : super(key:key);
-
-  @override
-  EventListState createState() => EventListState();
-}
-
-class EventListState extends State<EventList> {
-  final List<String> prueba = <String>['Primero','Segundo'];
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: const EdgeInsets.all(8),
-      itemBuilder: (BuildContext context, int index) {
-        return Container(
-          height: 50,
-          child: Center(child: Text('${prueba[index]}'),),
-        );
-      },
-      itemCount: prueba.length, 
-      separatorBuilder: (BuildContext context, int index) => const Divider(),
-    );
-  }
-} */
 
 class EventList extends StatefulWidget {
   final List<dynamic> events;
@@ -100,54 +56,37 @@ class EventList extends StatefulWidget {
 }
 
 class EventListState extends State<EventList> {
+  Widget moneyIcon(int index) {
+    var icon = Icon(Icons.error_outline);
+    if (widget.events[index]["free"]) {
+      icon = Icon(Icons.money_off);
+    } else {
+      icon = Icon(Icons.attach_money);
+    }
+
+    return icon;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: widget.events.length,
       itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-          title: Text(widget.events[index]["name"]),
-          subtitle: Text(widget.events[index]["description"]),
+        return Card(
+          child: ListTile(
+            leading: FlutterLogo(size: 56.0,),
+            title: Text(widget.events[index]["name"], textScaleFactor: 1.3,),
+            subtitle: Text(widget.events[index]["description"], overflow: TextOverflow.ellipsis,),
+            trailing: moneyIcon(index),
+            contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+            isThreeLine: true,
+          ),
         );
       },
     );
   }
 }
 
-// Opcion: Stateless
-/* 
-class EventListStateless extends StatelessWidget {
-  final List<Event> events;
-
-  EventListStateless({Key key, this.events}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: events.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Column(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              child: Card(
-                child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(events[index].name),
-                      subtitle: Text(events[index].description),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
- */
 // Clases
 
 class Event {
@@ -183,34 +122,11 @@ class Event {
 }
 
 // fetch
-/*
-List<Event> parseEvents(String responseBody) {
-  final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
 
-  return parsed.map<Event>((json) => Event.fromJson(json)).toList();
-} Might be useless
-*/
+Future getJsonData() async {
+  var response = await Dio().get('https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io/events');
 
-Future<List<Event>> returnEvents() async {
-  print("Hola");
-  final jsonString =
-    await http.get('https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io/events');
+  List<dynamic> list = response.data;
 
-    // https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io
-
-  final jsonResponse = json.decode(jsonString.body);
-
-  List<Event> events = jsonResponse.map(
-    (dynamic item) => Event.fromJson(item),
-  ).toList();
-
-
-
-  return events;
+  return list;
 }
-
-Future<List<Event>> fetchEvents = Future<List<Event>>.value(
-  returnEvents(),
-);
-
-// TODO Funciona, pero no devuelve los datos del JSON, puede ser un error en el parseo
