@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
+import 'event_details/event_details.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -35,6 +37,7 @@ class Home extends StatelessWidget {
       body: Container(
         child: FutureBuilder<dynamic>(
           future: getJsonData(),
+          // Puede que este haciendo peticiones por cada objeto que tiene la lista
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             return snapshot.hasData
               ? EventList(events: snapshot.data)
@@ -76,10 +79,18 @@ class EventListState extends State<EventList> {
           child: ListTile(
             leading: FlutterLogo(size: 56.0,),
             title: Text(widget.events[index]["name"], textScaleFactor: 1.3,),
-            subtitle: Text(widget.events[index]["description"], overflow: TextOverflow.ellipsis,),
+            subtitle: Text(widget.events[index]["when"]),
             trailing: moneyIcon(index),
             contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
             isThreeLine: true,
+            onTap: () {
+              Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => DetailsPage(
+                  event: widget.events[index]
+                )),
+              );
+            },
           ),
         );
       },
