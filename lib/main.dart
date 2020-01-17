@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
 import 'event_details/event_details.dart';
+import 'text_styles/styles.dart';
 
 void main() => runApp(MyApp());
 
@@ -29,9 +30,14 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inicio'),
+        title: Text(
+          'Inicio',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
         centerTitle: true,
-        backgroundColor: Color.fromRGBO(110, 255, 105, 90),
+        backgroundColor: Color.fromRGBO(56, 142, 60, 90),
       ),
       body: Container(
         child: FutureBuilder<dynamic>(
@@ -42,6 +48,31 @@ class Home extends StatelessWidget {
               ? EventList(events: snapshot.data)
               : Center(child: CircularProgressIndicator());
           },
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Se Sale', style: drawerTitleTextStyle(),),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                gradient: LinearGradient(
+                  colors: <Color>[
+                    Color.fromRGBO(56, 142, 60, 20),
+                    Color.fromRGBO(56, 142, 60, 60),
+                  ]
+                )
+              ),
+            ),
+            ListTile(
+              title: Text('Inicio'),
+              selected: true,
+            ),
+            ListTile(
+              title: Text('Configuracion')
+            ),
+          ],
         ),
       ),
     );
@@ -75,13 +106,18 @@ class EventListState extends State<EventList> {
       itemCount: widget.events.length,
       itemBuilder: (BuildContext context, int index) {
         return Card(
-          child: ListTile(
-            leading: FlutterLogo(size: 56.0,),
-            title: Text(widget.events[index]["name"], textScaleFactor: 1.3,),
-            subtitle: Text(widget.events[index]["when"]),
-            trailing: moneyIcon(index),
-            contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-            isThreeLine: true,
+          // The animation does not work
+          child: InkResponse(
+            child: Container(
+              child: ListTile(
+                leading: FlutterLogo(size: 56.0,),
+                title: Text(widget.events[index]["name"], textScaleFactor: 1.3,),
+                subtitle: Text(widget.events[index]["when"]),
+                trailing: moneyIcon(index),
+                contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+                isThreeLine: true,
+              ),
+            ),
             onTap: () {
               Navigator.push(
                 context, 
