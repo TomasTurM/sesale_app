@@ -136,7 +136,7 @@ class DetailsPageState extends State<DetailsPage> {
               children: <Widget>[
                 Text(
                   "Descripcion", 
-                  style: TitleStyle(),
+                  style: titleStyle(),
                 ),
                 Text(
                   widget.event["description"], 

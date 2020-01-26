@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
-TextStyle TitleStyle() {
+TextStyle titleStyle() {
   return TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 50.0,
