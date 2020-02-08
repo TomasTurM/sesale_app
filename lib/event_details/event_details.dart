@@ -25,12 +25,15 @@ class DetailsPageState extends State<DetailsPage> {
 
     for (int i = 0; i < tags.length; i++) {
       tagsList.add(
-        Chip(
-          label: Text(
-            tags[i],
-            style: chipsTextStyle(),
+        Container(
+          child: Chip(
+            label: Text(
+              tags[i],
+              style: chipsTextStyle(),
+            ),
+            labelPadding: EdgeInsets.all(10.0),
           ),
-          labelPadding: EdgeInsets.all(10.0),
+          padding: EdgeInsets.all(5.0),
         )
       );
     }
@@ -204,5 +207,3 @@ List<Widget> ageRestriction(bool adults) {
 
   return widgets;
 }
-
-// TODO abstraer el appbar de main.dart

@@ -69,9 +69,6 @@ class Home extends StatelessWidget {
               title: Text('Inicio'),
               selected: true,
             ),
-            ListTile(
-              title: Text('Configuracion')
-            ),
           ],
         ),
       ),
@@ -110,7 +107,6 @@ class EventListState extends State<EventList> {
           child: InkResponse(
             child: Container(
               child: ListTile(
-                leading: FlutterLogo(size: 56.0,),
                 title: Text(widget.events[index]["name"], textScaleFactor: 1.3,),
                 subtitle: Text(widget.events[index]["when"]),
                 trailing: moneyIcon(index),

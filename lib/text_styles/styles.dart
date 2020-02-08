@@ -24,7 +24,7 @@ TextStyle normalTextStyle() {
 
 TextStyle chipsTextStyle() {
   return TextStyle(
-    fontSize: 25.0, 
+    fontSize: 20.0, 
   );
 }
 
