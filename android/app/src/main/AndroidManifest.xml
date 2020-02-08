@@ -30,8 +30,4 @@
             </intent-filter>
         </activity>
     </application>
-
-    <uses-permission 
-        android:name="android.permission.INTERNET"
-        android:maxSdkVersion="19"/>
 </manifest>
