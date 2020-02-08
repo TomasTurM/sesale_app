@@ -80,7 +80,6 @@ class EventListState extends State<EventList> {
       itemCount: widget.events.length,
       itemBuilder: (BuildContext context, int index) {
         return Card(
-          // The animation does not work
           child: InkResponse(
             child: Container(
               child: ListTile(
@@ -142,10 +141,28 @@ class Event {
 
 // fetch
 
+int compareWhen(DateTime a, DateTime b) {
+  int i;
+
+  if (a.compareTo(b) == 0) {
+    i = 0;
+  }
+
+  if (a.isBefore(b)) {
+    i = -1;
+  } else if (a.isAfter(b)) {
+    i = 1;
+  }
+
+  return i;
+}
+
 Future getJsonData() async {
   var response = await Dio().get('https://c4b5da97-0954-4717-ae66-be7376616509.mock.pstmn.io/events');
 
   List<dynamic> list = response.data;
+
+  list.sort((a, b) => compareWhen(DateTime.parse(a['when']), DateTime.parse(b['when'])));
 
   return list;
 }
