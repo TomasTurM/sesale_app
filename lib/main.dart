@@ -50,28 +50,6 @@ class Home extends StatelessWidget {
           },
         ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-              child: Text('Se Sale', style: drawerTitleTextStyle(),),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                gradient: LinearGradient(
-                  colors: <Color>[
-                    Color.fromRGBO(56, 142, 60, 20),
-                    Color.fromRGBO(56, 142, 60, 60),
-                  ]
-                )
-              ),
-            ),
-            ListTile(
-              title: Text('Inicio'),
-              selected: true,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
