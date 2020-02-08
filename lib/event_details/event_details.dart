@@ -118,7 +118,7 @@ class DetailsPageState extends State<DetailsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      isFree(widget.event["free"]),
+                      isFree(widget.event["price"]),
                     ],
                   )
                 ),
@@ -162,13 +162,13 @@ class DetailsPageState extends State<DetailsPage> {
   }
 }
 
-Widget isFree(bool free) {
+Widget isFree(int price) {
   Text text = Text("");
 
-  if (free) {
+  if (price == null) {
     text = Text("Gratis", style: subtitlesStyle());
   } else {
-    text = Text("Pago", style: subtitlesStyle());
+    text = Text("$price AR\$", style: subtitlesStyle());
   }
 
   return text;

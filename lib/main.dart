@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
 import 'event_details/event_details.dart';
-import 'text_styles/styles.dart';
 
 void main() => runApp(MyApp());
 
@@ -66,7 +65,7 @@ class EventList extends StatefulWidget {
 class EventListState extends State<EventList> {
   Widget moneyIcon(int index) {
     var icon = Icon(Icons.error_outline);
-    if (widget.events[index]["free"]) {
+    if (widget.events[index]["price"] == null) {
       icon = Icon(Icons.money_off);
     } else {
       icon = Icon(Icons.attach_money);
@@ -114,7 +113,7 @@ class Event {
   final String description;
   String when;
   final String location;
-  final bool free;
+  final int price;
   final bool adults;
   Set tags = new Set();
 
@@ -122,7 +121,7 @@ class Event {
     this.name,
     this.description,
     this.when,
-    this.free,
+    this.price,
     this.adults,
     this.location,
     this.tags,
@@ -133,7 +132,7 @@ class Event {
       name: json['name'] as String,
       description: json['description'] as String,
       when: json['when'] as String,
-      free: json['free'] as bool,
+      price: json['price'] as int,
       adults: json['adults'] as bool,
       location: json['location'] as String,
       tags: json['tags'] as Set,
