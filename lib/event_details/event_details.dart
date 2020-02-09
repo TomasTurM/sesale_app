@@ -47,7 +47,10 @@ class DetailsPageState extends State<DetailsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.event["name"]),
+        title: FittedBox(
+          fit:BoxFit.fitHeight, 
+          child: Text(widget.event['name'])
+        ),
         centerTitle: true,
         backgroundColor: Color.fromRGBO(56, 142, 60, 90),
       ),
