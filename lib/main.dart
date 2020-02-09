@@ -83,7 +83,11 @@ class EventListState extends State<EventList> {
           child: InkResponse(
             child: Container(
               child: ListTile(
-                title: Text(widget.events[index]["name"], textScaleFactor: 1.3,),
+                title: Text(
+                  widget.events[index]["name"], textScaleFactor: 1.3,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 subtitle: Text(widget.events[index]["when"]),
                 trailing: moneyIcon(index),
                 contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
